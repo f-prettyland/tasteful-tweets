@@ -9,7 +9,6 @@ import argparse
 import simplejson
 from settings import api, __location__
 
-
 def loadWords(loc):
   try:
     words_file = open(os.path.join(__location__,loc),'r')
@@ -31,6 +30,8 @@ def loadDictionary(loc):
     return dictionary
   except IOError:
     return {}
+
+pause_for_effect = 10
 
 terrible_nouns = loadWords('dict/terrible.txt')
 bad_nouns = loadWords('dict/bad.noun.txt')
@@ -69,7 +70,7 @@ def status_replace(p):
     print(edited)
     first = True
     while(len(swapped) > 0):
-      sleep(5)
+      sleep(pause_for_effect)
       chosenWord = swapped.pop()
       btw = b_t_dubs[1]
       if first:
@@ -80,8 +81,6 @@ def status_replace(p):
       print(defn)
       # new_post = api.update_status(status=defn,
                                     # in_reply_to_status_id = post_id)
-
-
 
 def main(parsed_args):
   if results.tweet_id:
