@@ -8,6 +8,7 @@ import os
 import random
 from settings import api, __location__
 
+
 bad_nouns = {}
 nice_nouns = {}
 bad_adjectives = {}
@@ -21,6 +22,7 @@ def happifier(replacee, replacers):
 
 def status_replace():
   posts = api.get_user_timeline(screen_name = "HateToHearts")
+  a = ["today is a bad day", "I think you are lazy"]
   for p in posts:
     print(p['text'])
     print(happifier(p['text'], nice_nouns))
