@@ -20,8 +20,8 @@ def loadWords(loc):
     return {}
 
 terrible_nouns = loadWords('dict/terrible.txt')
-bad_nouns = loadWords('dict/bad.txt')
-nice_nouns = loadWords('dict/good.txt')
+bad_nouns = loadWords('dict/bad.noun.txt')
+nice_nouns = loadWords('dict/funny.noun.txt')
 bad_adjectives = loadWords('dict/bad.adj.txt')
 nice_adjectives = loadWords('dict/funny.adj.txt')
 
@@ -40,12 +40,11 @@ def status_replace(p):
   print(p['text'])
   edited = happifier(p['text'], nice_nouns, bad_nouns)
   edited = happifier(edited, nice_adjectives, bad_adjectives)
+  # api.update_status(status=edited)
   print(edited)
 
 
 def main(parsed_args):
-  print(nice_nouns)
-  print(nice_adjectives)
   if results.tweet_id:
     status_replace(api.lookup_status(id=results.tweet_id)[0])
   elif results.account:
