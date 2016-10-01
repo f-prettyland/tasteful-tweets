@@ -14,7 +14,7 @@ bad_adjectives = []
 nice_adjectives = []
 current_dictionary_word=""
 toReplace=False
-dictionary={}
+dictionary={"key":"value", "mike":"drunk"}
 
 def happifier(replacee, lookup, replacers):
   global toReplace
@@ -35,6 +35,7 @@ def happifier(replacee, lookup, replacers):
     return regex.sub(" " + chosenWord + " ", replacee.lower())
 
 def status_replace():
+
   posts = ["Crooked Hillary - - Makes History!", 
            "They should be forced to suffer and, when they kill, they should be executed for their crimes"]
   for p in posts:
@@ -44,8 +45,10 @@ def status_replace():
       print(happifier(p, bad_nouns,funny_nouns))
     print(toReplace)   
     
-    if (toRepalce == True and chosenWord != ""):
-      if chosenWord in dictionary:
+    if (toReplace == True):
+      print (chosenWord + " is the word being replaced.")
+      if chosenWord.capitalize() in dictionary.keys():
+        return "By the way, " + chosenWord + " just means " + dictionary[chosenWord.capitalize()]
         
     
 
@@ -64,9 +67,13 @@ def loadDictionary(loc):
     global dictionary
     words_file = open("/Users/developer/Desktop/projects/peaceHackathon/tasteful-tweets/"+loc,'r')
     for x in words_file:
-      dictionary[x.split(',')[0]] = x.split(',')[1]
-     words_file.close() 
+      key = x.split(',')[0] 
+      value = x.split(',')[1]
+      #print (key, value)
+      dictionary[key] = value
 
+    words_file.close() 
+    #print dictionary
   except IOError:
     return {}
 
@@ -78,6 +85,8 @@ bad_nouns = loadWords('dict/bad.noun.txt')
 
 funny_nouns = loadWords('dict/funny.noun.txt')
 
-dictionary = loadWords('dict/dictionary.txt')
+loadDictionary('dict/dictionary.txt')
 
-status_replace()
+print ( dictionary)
+
+print(status_replace())
