@@ -4,11 +4,12 @@ import string
 import simplejson
 import os
 import random
-from settings import api
+from settings import api, __location__, stream
 
 # post(status=sys.argv[1]);
 
-__location__ = os.path.realpath(os.path.join(os.getcwd(), os.path.dirname(__file__)))
+
+stream.statuses.filter(track='twitter')
 
 def status_scrape():
   # ids = "782139418517831680"
@@ -20,7 +21,7 @@ def status_scrape():
   for entry in followers:
     print(entry)
 
-status_scrape()
+# status_scrape()
 
 def randomTweet():
   try:
