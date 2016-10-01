@@ -1,67 +1,32 @@
 #!/usr/bin/env python3
 import sys
+from functools import reduce
+import re
 import string
 import simplejson
 import os
 import random
-from settings import api, __location__, stream
+from settings import api, __location__
 
-# post(status=sys.argv[1]);
+bad_words ={}
+nice_words ={}
 
+def happifier(to_find, replacee):
+  regex = re.compile('|'.join(r'(?:\s+|^)'+re.escape(x)+r'(?:\s+|$)' for x in to_find))
+  return regex.sub("",replacee)
 
-stream.statuses.filter(track='twitter')
-
-def status_scrape():
-  # ids = "782139418517831680"
-  # stats = api.get_list_statuses(ids)
-  # followers = api.get_list_statuses(screen_name = "HateToHearts")
-  followers = api.get_list_statuses(slug="twitter", owner_screen_name="HateToHearts")
-
-  # users = api.lookup_user(user_id = ids)
-  for entry in followers:
-    print(entry)
-
-# status_scrape()
-
-def randomTweet():
+def status_replace():
+  posts = api.get_user_timeline(screen_name = "HateToHearts")
   try:
-    tweetsFile = open(os.path.join(__location__,'tweets.txt'),'r')
-    tweetsList = tweetsFile.readlines()
-    tweetsFile.close()
-    randomChoice = random.randrange(len(tweetsList))
-    print (tweetsList[randomChoice]) #For debugging only
-    api.update_status(status=tweetsList[randomChoice])
+    bad_words_file = open(os.path.join(__location__,'dict/bad.txt'),'r')
+    bad_words = [x.strip() for x in bad_words_file.readlines()]
+    bad_words_file.close()
+
+    for p in posts:
+      print(p['text'])
+      print(happifier(bad_words, p['text']))
     return None
   except IOError:
     return None
 
-def post(tweet_s):
-  api.update_status(tweet_s)
-
-
-def scrape():
-  ids = "782139418517831680"
-  users = api.lookup_user(user_id = ids)
-
-  for entry in users:
-    r = {}
-    r['id'] = entry['id']
-    r['screen_name'] = entry['screen_name']
-    r['name'] = entry['name']
-    r['created_at'] = entry['created_at']
-    r['url'] = entry['url']
-    r['followers_count'] = entry['followers_count']
-    r['friends_count'] = entry['friends_count']
-    r['statuses_count'] = entry['statuses_count']
-    r['favourites_count'] = entry['favourites_count']
-    r['listed_count'] = entry['listed_count']
-    r['contributors_enabled'] = entry['contributors_enabled']
-    r['description'] = entry['description']
-    r['protected'] = entry['protected']
-    r['location'] = entry['location']
-    r['lang'] = entry['lang']
-    if 'url' in entry['entities']:
-        r['expanded_url'] = entry['entities']['url']['urls'][0]['expanded_url']
-    else:
-        r['expanded_url'] = ''
-    print(r)
+status_replace()
