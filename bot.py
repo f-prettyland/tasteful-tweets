@@ -8,24 +8,28 @@ import os
 import random
 from settings import api, __location__
 
-
+terrible_nouns = {}
 bad_nouns = {}
 nice_nouns = {}
 bad_adjectives = {}
 nice_adjectives = {}
 
-def happifier(replacee, replacers):
+def happifier(replacee, replacers, bad_things):
   regex = re.compile('|'.join(r'(?:\s+|^)'+re.escape(x)+r'(?:\s+|$)'
-                      for x in bad_nouns))
+                      for x in bad_things))
   randomChoice = random.randrange(len(replacers))
-  return regex.sub(" " + replacers[randomChoice] + " ", replacee)
+  return regex.sub(" " + replacers[randomChoice] + " ", replacee.lower())
 
-def status_replace():
-  posts = api.get_user_timeline(screen_name = "HateToHearts")
-  a = ["today is a bad day", "I think you are lazy"]
+def iterate_timeline(scrn_nam):
+  posts = api.get_user_timeline(screen_name = scrn_nam)
   for p in posts:
-    print(p['text'])
-    print(happifier(p['text'], nice_nouns))
+    status_replace(p)
+
+def status_replace(p):
+  print(p['text'])
+  edited = happifier(p['text'], nice_nouns, bad_nouns)
+  edited = happifier(edited, nice_adjectives, bad_adjectives)
+  print(edited)
 
 def loadWords(loc):
   try:
@@ -36,7 +40,10 @@ def loadWords(loc):
   except IOError:
     return {}
 
+terrible_nouns = loadWords('dict/terrible.txt')
 bad_nouns = loadWords('dict/bad.txt')
 nice_nouns = loadWords('dict/good.txt')
+bad_adjectives = loadWords('dict/bad.adj.txt')
+nice_adjectives = loadWords('dict/funny.adj.txt')
 
-status_replace()
+iterate_timeline("HateToHearts")
