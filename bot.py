@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-import sys
-from functools import reduce
 import re
 import os
+import sys
+from time import sleep
 import random
 import string
 import argparse
@@ -19,11 +19,26 @@ def loadWords(loc):
   except IOError:
     raise Exception('Your file %s was not found', loc)
 
+def loadDictionary(loc):
+  try:
+    dictionary = {}
+    words_file = open(loc)
+    for x in words_file:
+      key = x.split(',')[0]
+      value = x.split(',')[1]
+      dictionary[key] = value
+    words_file.close()
+    return dictionary
+  except IOError:
+    return {}
+
 terrible_nouns = loadWords('dict/terrible.txt')
 bad_nouns = loadWords('dict/bad.noun.txt')
 nice_nouns = loadWords('dict/funny.noun.txt')
 bad_adjectives = loadWords('dict/bad.adj.txt')
 nice_adjectives = loadWords('dict/funny.adj.txt')
+dictionary = loadDictionary('dict/dictionary.txt')
+b_t_dubs = ["By the way, ", "Oh and "]
 
 def happifier(replacee, replacers, bad_things):
   regex = re.compile('|'.join(r'(?:\s+|^)'+re.escape(x)+r'(?:\s+|$)'
@@ -44,8 +59,28 @@ def status_replace(p):
   print(p['text'])
   edited = happifier(p['text'], nice_nouns, bad_nouns)
   edited = happifier(edited, nice_adjectives, bad_adjectives)
-  # api.update_status(status=edited)
-  print(edited)
+  swapped = []
+  for key in  dictionary.keys():
+    if key.lower() in edited.lower():
+      swapped.append(key)
+  if len(swapped) > 0:
+    # new_post = api.update_status(status=edited)
+    # post_id = new_post['id_str']
+    print(edited)
+    first = True
+    while(len(swapped) > 0):
+      sleep(5)
+      chosenWord = swapped.pop()
+      btw = b_t_dubs[1]
+      if first:
+        btw = b_t_dubs[0]
+        first = False
+      defn = btw + chosenWord.lower() + " means " + \
+            dictionary[chosenWord.capitalize()].lower()
+      print(defn)
+      # new_post = api.update_status(status=defn,
+                                    # in_reply_to_status_id = post_id)
+
 
 
 def main(parsed_args):

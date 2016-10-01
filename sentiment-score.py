@@ -3,18 +3,18 @@ import nltk.classify.util
 import string
 import inspect
 from nltk.classify import NaiveBayesClassifier
-from nltk.corpus import movie_reviews
+from nltk.corpus import movie_reviews as train_file
 
 def word_feats(words):
   return dict([(word, True) for word in words])
 
 def train_model():
-  negids = movie_reviews.fileids('neg')
-  posids = movie_reviews.fileids('pos')
+  negids = train_file.fileids('neg')
+  posids = train_file.fileids('pos')
 
-  negfeats = [(word_feats(movie_reviews.words(fileids=[f])), 'neg')
+  negfeats = [(word_feats(train_file.words(fileids=[f])), 'neg')
               for f in negids]
-  posfeats = [(word_feats(movie_reviews.words(fileids=[f])), 'pos')
+  posfeats = [(word_feats(train_file.words(fileids=[f])), 'pos')
               for f in posids]
 
   negcutoff = int(len(negfeats)*3/4)
