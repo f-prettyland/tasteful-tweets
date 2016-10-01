@@ -17,7 +17,7 @@ def loadWords(loc):
     words_file.close()
     return words
   except IOError:
-    return {}
+    raise Exception('Your file %s was not found', loc)
 
 terrible_nouns = loadWords('dict/terrible.txt')
 bad_nouns = loadWords('dict/bad.noun.txt')
@@ -50,10 +50,9 @@ def main(parsed_args):
   elif results.account:
     iterate_timeline(results.account)
   else:
-    print("How'd you get here?")
+    raise Exception('You gotta give me some kinda argument, -h is for help')
 
 if __name__ == "__main__":
-  results = None
   prsr = argparse.ArgumentParser(description='Create your own better twitter.')
 
   prsr.add_argument('-t', dest='tweet_id',
@@ -67,8 +66,7 @@ if __name__ == "__main__":
   #                     dest='boolean_switch',
   #                     help='Set a switch to false')
   results = prsr.parse_args()
-  if results:
+  try:
     main(results)
-  else:
-    print("You gotta give me something")
-    quit()
+  except Exception as error:
+    print('Caught this error: ' + str(error))
