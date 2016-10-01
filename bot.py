@@ -29,7 +29,11 @@ def happifier(replacee, replacers, bad_things):
   regex = re.compile('|'.join(r'(?:\s+|^)'+re.escape(x)+r'(?:\s+|$)'
                       for x in bad_things))
   randomChoice = random.randrange(len(replacers))
-  return regex.sub(" " + replacers[randomChoice] + " ", replacee.lower())
+  edited = regex.sub(" " + replacers[randomChoice] + " ", replacee)
+  new_regex = re.compile('|'.join(r'(?:\s+|^)'+re.escape(x.capitalize())+r'(?:\s+|$)'
+                      for x in bad_things))
+  randomChoice = random.randrange(len(replacers))
+  return new_regex.sub(" " + replacers[randomChoice].capitalize() + " ", edited)
 
 def iterate_timeline(scrn_nam):
   posts = api.get_user_timeline(screen_name = scrn_nam)
