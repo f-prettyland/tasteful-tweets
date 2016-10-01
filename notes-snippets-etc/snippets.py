@@ -14,7 +14,6 @@ def randomTweet():
 def post(tweet_s):
   api.update_status(tweet_s)
 
-
 def scrape():
   ids = "782139418517831680"
   users = api.lookup_user(user_id = ids)

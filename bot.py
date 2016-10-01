@@ -2,28 +2,13 @@
 import sys
 from functools import reduce
 import re
-import string
-import simplejson
 import os
 import random
+import string
+import argparse
+import simplejson
 from settings import api, __location__
 
-bad_nouns = {}
-nice_nouns = {}
-bad_adjectives = {}
-nice_adjectives = {}
-
-def happifier(replacee, replacers):
-  regex = re.compile('|'.join(r'(?:\s+|^)'+re.escape(x)+r'(?:\s+|$)'
-                      for x in bad_nouns))
-  randomChoice = random.randrange(len(replacers))
-  return regex.sub(" " + replacers[randomChoice] + " ", replacee)
-
-def status_replace():
-  posts = api.get_user_timeline(screen_name = "HateToHearts")
-  for p in posts:
-    print(p['text'])
-    print(happifier(p['text'], nice_nouns))
 
 def loadWords(loc):
   try:
@@ -34,7 +19,57 @@ def loadWords(loc):
   except IOError:
     return {}
 
+terrible_nouns = loadWords('dict/terrible.txt')
 bad_nouns = loadWords('dict/bad.txt')
 nice_nouns = loadWords('dict/good.txt')
+bad_adjectives = loadWords('dict/bad.adj.txt')
+nice_adjectives = loadWords('dict/funny.adj.txt')
 
-status_replace()
+def happifier(replacee, replacers, bad_things):
+  regex = re.compile('|'.join(r'(?:\s+|^)'+re.escape(x)+r'(?:\s+|$)'
+                      for x in bad_things))
+  randomChoice = random.randrange(len(replacers))
+  return regex.sub(" " + replacers[randomChoice] + " ", replacee.lower())
+
+def iterate_timeline(scrn_nam):
+  posts = api.get_user_timeline(screen_name = scrn_nam)
+  for p in posts:
+    status_replace(p)
+
+def status_replace(p):
+  print(p['text'])
+  edited = happifier(p['text'], nice_nouns, bad_nouns)
+  edited = happifier(edited, nice_adjectives, bad_adjectives)
+  print(edited)
+
+
+def main(parsed_args):
+  print(nice_nouns)
+  print(nice_adjectives)
+  if results.tweet_id:
+    status_replace(api.lookup_status(id=results.tweet_id)[0])
+  elif results.account:
+    iterate_timeline(results.account)
+  else:
+    print("How'd you get here?")
+
+if __name__ == "__main__":
+  results = None
+  prsr = argparse.ArgumentParser(description='Create your own better twitter.')
+
+  prsr.add_argument('-t', dest='tweet_id',
+                      help='An individual tweet, addressed by ID to change')
+
+  prsr.add_argument('-a', dest='account',
+                      help='A twitter account, addressed by screen name to \
+                      evaluate')
+
+  # prsr.add_argument('-f', action='store_false', default=False,
+  #                     dest='boolean_switch',
+  #                     help='Set a switch to false')
+  results = prsr.parse_args()
+  if results:
+    main(results)
+  else:
+    print("You gotta give me something")
+    quit()
