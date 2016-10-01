@@ -7,33 +7,15 @@ import random
 import string
 import argparse
 import simplejson
-from settings import api, __location__
-
-def loadWords(loc):
-  try:
-    words_file = open(os.path.join(__location__,loc),'r')
-    words = [x.strip() for x in words_file.readlines()]
-    words_file.close()
-    return words
-  except IOError:
-    raise Exception('Your file %s was not found', loc)
-
-def loadDictionary(loc):
-  try:
-    dictionary = {}
-    words_file = open(loc)
-    for x in words_file:
-      key = x.split(',')[0]
-      value = x.split(',')[1]
-      dictionary[key] = value
-    words_file.close()
-    return dictionary
-  except IOError:
-    return {}
+from settings import api
+from parser_of_words import loadWords, loadDictionary
+from sentiment_score import train_model_and_prepare, score_it
 
 pause_for_effect = 10
+threshold = -70
 
-terrible_nouns = loadWords('dict/terrible.txt')
+global classifier
+classifier = None
 bad_nouns = loadWords('dict/bad.noun.txt')
 nice_nouns = loadWords('dict/funny.noun.txt')
 bad_adjectives = loadWords('dict/bad.adj.txt')
@@ -53,12 +35,21 @@ def happifier(replacee, replacers, bad_things):
 
 def iterate_timeline(scrn_nam):
   posts = api.get_user_timeline(screen_name = scrn_nam)
-  for p in posts:
-    status_replace(p)
+  worst_score = threshold
+  worst_post = None
+  for full_status in posts:
+    p = full_status['text']
+    p_score = score_it(classifier, p)
+    # print(p, "\nScore: ", p_score, "\n\n") #debug
+    if p_score < worst_score:
+      worst_score = p_score
+      worst_post = p
+  if worst_post:
+    status_replace(worst_post)
 
 def status_replace(p):
-  print(p['text'])
-  edited = happifier(p['text'], nice_nouns, bad_nouns)
+  print(p)
+  edited = happifier(p, nice_nouns, bad_nouns)
   edited = happifier(edited, nice_adjectives, bad_adjectives)
   swapped = []
   for key in  dictionary.keys():
@@ -104,7 +95,9 @@ if __name__ == "__main__":
   #                     dest='boolean_switch',
   #                     help='Set a switch to false')
   results = prsr.parse_args()
-  try:
-    main(results)
-  except Exception as error:
-    print('Caught this error: ' + str(error))
+  # try:
+  classifier
+  classifier = train_model_and_prepare()
+  main(results)
+  # except Exception as error:
+  #   print('Caught this error: ' + str(error))
