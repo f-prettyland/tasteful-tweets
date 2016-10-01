@@ -27,4 +27,7 @@ print('accuracy:', nltk.classify.util.accuracy(classifier, testfeats))
 classifier.show_most_informative_features()
 words = nltk.word_tokenize("I like the trees")
 feats = {word: True for word in words}
-print(classifier.classify(feats))
+if classifier.classify(feats) < 0 :
+	print("no good")
+else:
+	print("yaaaaas")
