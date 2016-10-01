@@ -1,0 +1,102 @@
+Abibliophobia,The fear of running out of reading material,Noun
+Absquatulate,To leave or abscond with something,Verb
+Allegator,Some who alleges,,Noun
+Anencephalous,Lacking a brain,Adj
+Argle-bargle,A loud row or quarrel,Noun
+Batrachomyomachy,Making a mountain out of a molehill,Noun
+Billingsgate,Loud, raucous profanity,Noun
+Bloviate,To speak pompously or brag,Verb
+Blunderbuss,A gun with a flared muzzle or disorganized activity,Noun
+Borborygm,A rumbling of the stomach,Noun
+Boustrophedon,A back and forth pattern,Noun
+Bowyang,A strap that holds the pants legs in place,Noun
+Brouhaha,An uproar,Noun
+Bumbershoot,An umbrella,Noun
+Callipygian,Having an attractive rear end or nice buns,Noun
+Canoodle,To hug and kiss,Verb
+Cantankerous,Testy, grumpy,Adj
+Catercornered,Diagonal(ly),Adj
+Cockalorum,A small, haughty man,Noun
+Cockamamie,Absurd, outlandish,Adj
+Codswallop,Nonsense, balderdash,Noun
+Collop,A slice of meat or fold of flab,Noun
+Collywobbles,Butterflies in the stomach,Noun
+Comeuppance,Just reward, just deserts,Noun
+Crapulence,Discomfort from eating or drinking too much,Noun
+Crudivore,An eater of raw food,Noun
+Discombobulate,To confuse,Verb
+Donnybrook,An melee, a riot,Noun
+Doozy,Something really great,Adj
+Dudgeon,A bad mood, a huff,Noun
+Ecdysiast,An exotic dancer, a stripper,Noun
+Eructation,A burp, belch,Noun
+Fard,Face-paint, makeup,Noun
+Fartlek,An athletic training regime,Noun
+Fatuous,Unconsciously foolish,Adj
+Filibuster,Refusal to give up the floor in a debate to prevent a vote,Noun
+Firkin,A quarter barrel or small cask,Noun
+Flibbertigibbet,Nonsense, balderdash,Noun
+Flummox,To exasperate,Verb
+Folderol,Nonsense,Noun
+Formication,The sense of ants crawling on your skin,Noun
+Fuddy-duddy,An old-fashioned, mild-mannered person,Noun
+Furbelow,A fringe or ruffle,Noun
+Furphy,A portable water-container,Noun
+Gaberlunzie,A wandering beggar,Noun
+Gardyloo!,A warning shouted before throwing water from above,Noun
+Gastromancy,Telling fortune from the rumblings of the stomach,Noun
+Gazump,To buy something already promised to someone else,Verb
+Gobbledygook,Nonsense, balderdash,Noun
+Gobemouche,A highly gullible person,Noun
+Godwottery,Nonsense, balderdash,Noun
+Gongoozle,To stare at, kibitz,Verb
+Gonzo,Far-out journalism,Noun
+Goombah,An older friend who protects you,Noun
+Hemidemisemiquaver,A musical timing of 1/64,Noun
+Hobbledehoy,An awkward or ill-mannered young boy,Noun
+Hocus-pocus,Deceitful sleight of hand,Noun
+Hoosegow,A jail or prison,Noun
+Hootenanny,A country or folk music get-together,Noun
+Jackanapes,A rapscallion, hooligan,Noun
+Kerfuffle,Nonsense, balderdash,Noun
+Klutz,An awkward, stupid person,Noun
+La-di-da,An interjection indicating that something is pretentious,Adj
+Lagopodous,Like a rabbit's foot,Adj
+Lickety-split,As fast as possible,Adj
+Lickspittle,A servile person, a toady,Noun
+Logorrhea,Loquaciousness, talkativeness,Noun
+Lollygag,To move slowly, fall behind,Adj
+Malarkey,Nonsense, balderdash,Noun
+Maverick,A loner, someone outside the box,Noun
+Mollycoddle,To treat too leniently,Noun
+Mugwump,An independent politician who does not follow any party,Noun
+Mumpsimus,An outdated and unreasonable position on an issue,Noun
+Namby-pamby,Weak, with no backbone,Adj
+Nincompoop,A foolish person,Noun
+Oocephalus,An egghead,Noun
+Ornery,Mean, nasty, grumpy,Adj
+Pandiculation,A full body stretch,Noun
+Panjandrum,Someone who thinks himself high and mighty,Noun
+Pettifogger,A person who tries to befuddle others with his speech,Noun
+Pratfall,A fall on one's rear,Noun
+Quean,A disreputable woman,Noun
+Rambunctious,Aggressive, hard to control,Adj
+Ranivorous,Frog-eating,Adj
+Rigmarole,Nonsense, unnecessary complexity,Noun
+Shenanigan,A prank, mischief,Noun
+Sialoquent,Spitting while speaking,Adj
+Skedaddle,To hurry somewhere,Adj
+Skullduggery,No good, underhanded dealing,Adj
+Slangwhanger,A loud abusive speaker or obnoxious writer,Noun
+Smellfungus,A perpetual pessimist,Noun
+Snickersnee,A long knife,Noun
+Snollygoster,A person who can't be trusted,Noun
+Snool,A servile person,Noun
+Tatterdemalion,A child in rags,Noun
+Troglodyte,Someone or something that lives in a cave,Noun
+Turdiform,Having the form of a lark,Noun
+Unremacadamized,Having not been repaved with macadam,Noun
+Vomitory,An exit or outlet,Noun
+Wabbit,Exhausted, tired, worn out,Noun
+Widdershins,In a contrary or counterclockwise direction,Noun
+Yahoo,A rube, a country bumpkin,Noun
