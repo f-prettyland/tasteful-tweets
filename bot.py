@@ -17,11 +17,11 @@ def loadWords(loc):
     words_file.close()
     return words
   except IOError:
-    return {}
+    raise Exception('Your file %s was not found', loc)
 
 terrible_nouns = loadWords('dict/terrible.txt')
-bad_nouns = loadWords('dict/bad.txt')
-nice_nouns = loadWords('dict/good.txt')
+bad_nouns = loadWords('dict/bad.noun.txt')
+nice_nouns = loadWords('dict/funny.noun.txt')
 bad_adjectives = loadWords('dict/bad.adj.txt')
 nice_adjectives = loadWords('dict/funny.adj.txt')
 
@@ -40,21 +40,19 @@ def status_replace(p):
   print(p['text'])
   edited = happifier(p['text'], nice_nouns, bad_nouns)
   edited = happifier(edited, nice_adjectives, bad_adjectives)
+  # api.update_status(status=edited)
   print(edited)
 
 
 def main(parsed_args):
-  print(nice_nouns)
-  print(nice_adjectives)
   if results.tweet_id:
     status_replace(api.lookup_status(id=results.tweet_id)[0])
   elif results.account:
     iterate_timeline(results.account)
   else:
-    print("How'd you get here?")
+    raise Exception('You gotta give me some kinda argument, -h is for help')
 
 if __name__ == "__main__":
-  results = None
   prsr = argparse.ArgumentParser(description='Create your own better twitter.')
 
   prsr.add_argument('-t', dest='tweet_id',
@@ -68,8 +66,7 @@ if __name__ == "__main__":
   #                     dest='boolean_switch',
   #                     help='Set a switch to false')
   results = prsr.parse_args()
-  if results:
+  try:
     main(results)
-  else:
-    print("You gotta give me something")
-    quit()
+  except Exception as error:
+    print('Caught this error: ' + str(error))
