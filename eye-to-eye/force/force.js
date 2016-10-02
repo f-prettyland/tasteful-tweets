@@ -1,8 +1,29 @@
-var svg = d3.select("svg"),
+
+var itemSize = 18,
+  cellSize = itemSize-1,
+  margin = {top:20,right:20,bottom:20,left:25};
+//   width = 800,
+//   height = 800,
+//
+// //formats
+// var hourFormat = d3.time.format('%H'),
+//   dayFormat = d3.time.format('%j'),
+//   timeFormat = d3.time.format('%Y-%m-%dT%X'),
+//   monthDayFormat = d3.time.format('%m.%d');
+//
+// //data vars for rendering
+// var dateExtent = null,
+//   data = null,
+//   dayOffset = 0,
+//   colorCalibration = ['#f6faaa','#FEE08B','#FDAE61','#F46D43','#D53E4F','#9E0142'],
+//   dailyValueExtent = {};
+
+var svg = d3.select("#main_canvas"),
     width = +svg.attr("width"),
     height = +svg.attr("height");
 
 var color = d3.scaleOrdinal(d3.schemeCategory20);
+var colorCalibration = ['#f6faaa','#FEE08B','#FDAE61','#F46D43','#D53E4F','#9E0142'];
 
 var simulation = d3.forceSimulation()
     .force("link", d3.forceLink().id(function(d) { return d.id; }))
@@ -70,6 +91,49 @@ function dragended(d) {
   d.fx = null;
   d.fy = null;
 }
+
+function initCalibration(){
+  d3.select("#key")
+   .selectAll('rect').data(colorCalibration).enter()
+  .append('rect')
+   .attr('width',cellSize)
+   .attr('height',cellSize)
+   .attr('x',function(d,i){
+     return i*itemSize;
+   })
+   .attr('fill',function(d){
+     return d;
+   });
+
+  //bind click event
+  d3.select("#key").on('click',function(){
+    renderColor();
+  });
+}
+
+function renderColor(){
+ var renderByCount = document.getElementsByName('displayType')[0].checked;
+
+ rect
+   .filter(function(d){
+     return (d.value['PM2.5']>=0);
+   })
+   .transition()
+   .delay(function(d){
+     return (dayFormat(d.date)-dayOffset)*15;
+   })
+   .duration(500)
+   .attrTween('fill',function(d,i,a){
+     //choose color dynamicly
+     var colorIndex = d3.scale.quantize()
+       .range([0,1,2,3,4,5])
+       .domain((renderByCount?[0,500]:dailyValueExtent[d.day]));
+
+     return d3.interpolate(a,colorCalibration[colorIndex(d.value['PM2.5'])]);
+   });
+}
+
+initCalibration();
 
 function pressed(){
   // if(document.getElementById('filter')){

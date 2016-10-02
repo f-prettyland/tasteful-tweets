@@ -8,8 +8,19 @@
   </head>
   <body>
     <div id="container" style="position:relative;">
+    <div class="calibration" role="calibration" style="position:absolute; top:0; left:0;">
+      <div class="group" role="example">
+        <svg id="key" width="120" height="17">
+        </svg>
+        <div role="description" class="description">
+          <label>Less</label>
+          <label>More</label>
+        </div>
+      </div>
+    </div>
+
     <div id="div2" style="position:absolute; top:0; left:0;">
-      <svg width="960" height="600"></svg>
+      <svg id="main_canvas" width="960" height="600"></svg>
     </div>
     <div id="div1" style="position:absolute; top:0; right:0;">
       <textarea id='filter' oninput="pressed()">

@@ -2,10 +2,11 @@ import sys
 sys.path.append('/home/mill/Code/tasteful-tweets')
 import json
 import argparse
-import networkx as nx
-from networkx.readwrite import json_graph
 import http_server
+import networkx as nx
 from settings import api
+from networkx.readwrite import json_graph
+from sentiment_score import train_model_and_prepare, score_it
 
 global classifier
 classifier = None
@@ -45,15 +46,15 @@ def iterate_timeline(scrn_nam):
   for full_status in posts:
     sum_score += score_it(classifier, p)
     # print(p, "\nScore: ", p_score, "\n\n") #debug
-  if len(posts) > 0
+  if len(posts) > 0:
     user = User(scrn_nam, sum_score/len(posts), [])
-  else:
 
 def main(parsed_args):
-  if results.account:
-    iterate_timeline(results.account)
-  else:
-    raise Exception('You gotta give me some kinda argument, -h is for help')
+  generate_graph()
+  # if results.account:
+  #   iterate_timeline(results.account)
+  # else:
+  #   raise Exception('You gotta give me some kinda argument, -h is for help')
 
 if __name__ == "__main__":
   prsr = argparse.ArgumentParser(description='Map some twitter users and ' +\

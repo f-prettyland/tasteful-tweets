@@ -1,1 +1,1 @@
-{"nodes": [{"id": 1, "name": 1}, {"id": 2, "name": 2}, {"id": 3, "name": 3}], "graph": {}, "directed": false, "multigraph": false, "links": []}
+{"directed": false, "graph": {}, "links": [], "multigraph": false, "nodes": [{"id": 1, "name": 1}, {"id": 2, "name": 2}, {"id": 3, "name": 3}]}

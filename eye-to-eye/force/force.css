@@ -1,3 +1,7 @@
+.calibration{margin-bottom: 15px;width:400px;}
+.calibration .group{display: inline-block;}
+.calibration .description{width:108px;}
+.calibration .description>label:last-child{float:right;}
 
 .links line {
   stroke: #999;
