@@ -1,1 +1,1 @@
-{"directed": false, "nodes": [{"score": 1, "id": 1, "name": 1}, {"score": 2, "id": 2, "name": 2}, {"score": 15, "id": 3, "name": 3}], "links": [], "graph": {}, "multigraph": false}
+{"directed": false, "graph": {}, "nodes": [{"id": 0}, {"id": 1}, {"id": 2}, {"id": 3}, {"id": 4}], "links": [{"target": 2, "source": 1}, {"target": 4, "source": 3}], "multigraph": false}

@@ -14,6 +14,7 @@ from sentiment_score import train_model_and_prepare, score_it
 pause_for_effect = 10
 threshold = -70
 
+global debug_mode
 global classifier
 classifier = None
 bad_nouns = loadWords('dict/bad.noun.txt')
@@ -48,7 +49,6 @@ def iterate_timeline(scrn_nam):
     status_replace(worst_post)
 
 def status_replace(p):
-  print(p)
   edited = happifier(p, nice_nouns, bad_nouns)
   edited = happifier(edited, nice_adjectives, bad_adjectives)
   swapped = []
@@ -56,9 +56,13 @@ def status_replace(p):
     if key.lower() in edited.lower():
       swapped.append(key)
   if len(swapped) > 0:
-    # new_post = api.update_status(status=edited)
-    # post_id = new_post['id_str']
-    print(edited)
+    post_id = -1
+    if debug_mode:
+      print(edited)
+    else:
+      new_post = api.update_status(status=edited)
+      post_id = new_post['id_str']
+
     first = True
     while(len(swapped) > 0):
       sleep(pause_for_effect)
@@ -69,13 +73,15 @@ def status_replace(p):
         first = False
       defn = btw + chosenWord.lower() + " means " + \
             dictionary[chosenWord.capitalize()].lower()
-      print(defn)
-      # new_post = api.update_status(status=defn,
-                                    # in_reply_to_status_id = post_id)
+      if debug_mode:
+        print(defn)
+      else:
+        new_post = api.update_status(status=defn,
+                                    in_reply_to_status_id = post_id)
 
 def main(parsed_args):
   if results.tweet_id:
-    status_replace(api.lookup_status(id=results.tweet_id)[0])
+    status_replace(api.lookup_status(id=results.tweet_id)[0]['text'])
   elif results.account:
     iterate_timeline(results.account)
   else:
@@ -91,12 +97,14 @@ if __name__ == "__main__":
                       help='A twitter account, addressed by screen name to \
                       evaluate')
 
-  # prsr.add_argument('-f', action='store_false', default=False,
-  #                     dest='boolean_switch',
-  #                     help='Set a switch to false')
+  prsr.add_argument('-d', dest='debug_mode', action='store_true',
+                      help='Just print don\'t tweet')
+  prsr.set_defaults(debug_mode=False)
+
   results = prsr.parse_args()
-  try:
-    classifier = train_model_and_prepare()
-    main(results)
-  except Exception as error:
-    print('Caught this error: ' + str(error))
+  debug_mode = results.debug_mode
+  # try:
+  classifier = train_model_and_prepare()
+  main(results)
+  # except Exception as error:
+  #   print('Caught this error: ' + str(error))

@@ -13,6 +13,9 @@ max_followers_to_check = 200
 
 global classifier
 classifier = None
+uid_to_gid = {}
+global gid
+gid = 0
 
 class User(object):
   u_id = 0
@@ -22,40 +25,59 @@ class User(object):
   follows = []
 
   def __init__(self, u_id, screen_name, avg_score, interests, follows):
+    global gid
     self.u_id = u_id
+    uid_to_gid[u_id] = gid
+    gid += 1
     self.screen_name = screen_name
     self.avg_score = avg_score
     self.interests = interests
     self.follows = follows
 
+
 def generate_graph(users):
   G=nx.Graph()
   for user in users:
-    G.add_node(user.u_id)
-    G.node[user.u_id]['score'] = user.avg_score
+    G.add_node(uid_to_gid[user.u_id])
+    G.node[uid_to_gid[user.u_id]]['score'] = user.avg_score
 
   for user in users:
     for follow in user.follows:
-      G.add_edge(user.u_id, follow)
+      # check we've made a node for this person
+      if follow in uid_to_gid.keys():
+        G.add_edge(uid_to_gid[user.u_id], uid_to_gid[follow])
 
   # write json formatted data
   d = json_graph.node_link_data(G) # node-link format to serialize
   json.dump(d, open('eye-to-eye/force/force.json','w'))
   print('Wrote node-link JSON data to force/force.json')
-  # open URL in running web browser
   http_server.load_url('eye-to-eye/force/force.html')
-  print('Or copy all files in force/ to webserver and load force/force.html')
 
 def scrape_users(iter_c, users):
   if iter_c >= max_expansions:
     return users
+  nextitr_users = []
   for user in users:
-    follow_ids = api.get_followers_ids(user_id=user.u_id, count=max_followers_to_check)
-    print(follow_ids)
+    followers_response = api.get_followers_ids(user_id=user.u_id,
+                                        count=max_followers_to_check)
+    for follow_id in followers_response['ids']:
+      potential_user = make_user_and_score(follow_id)
+      if potential_user:
+        nextitr_users.append(potential_user)
 
-def iterate_timeline(usr_id):
-  usr_deets = api.show_user(user_id = usr_id)
-  return User(usr_id, usr_deets['screen_name'], 20, [], [])
+  scrape_users(iter_c+1, nextitr_users)
+
+def make_user_and_score(usr_id):
+  # check not already made
+  if usr_id in uid_to_gid.keys():
+    return None
+  try:
+    usr_deets = api.show_user(user_id = usr_id)
+    return User(usr_id, usr_deets['screen_name'], 20, [], [])
+  except Exception as error:
+    print('Twitter access error for user id: ' + \
+      str(usr_id) + "\n    " + str(error))
+    return None
   # posts = api.get_user_timeline(user_id = usr_id)
   # sum_score = 0
   # worst_post = None
@@ -73,7 +95,7 @@ def main(parsed_args):
   if results.account:
     usr_deets = api.show_user(screen_name = results.account)
     our_users = []
-    our_users.append(iterate_timeline(usr_deets['id']))
+    our_users.append(make_user_and_score(usr_deets['id']))
     scrape_users(0, our_users)
   else:
     raise Exception('You gotta give me some kinda argument, -h is for help')
@@ -87,6 +109,7 @@ if __name__ == "__main__":
                       evaluate')
 
   results = prsr.parse_args()
+  # test_graph()
   # try:
   classifier
   classifier = train_model_and_prepare()
