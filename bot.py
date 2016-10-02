@@ -95,9 +95,8 @@ if __name__ == "__main__":
   #                     dest='boolean_switch',
   #                     help='Set a switch to false')
   results = prsr.parse_args()
-  # try:
-  classifier
-  classifier = train_model_and_prepare()
-  main(results)
-  # except Exception as error:
-  #   print('Caught this error: ' + str(error))
+  try:
+    classifier = train_model_and_prepare()
+    main(results)
+  except Exception as error:
+    print('Caught this error: ' + str(error))
