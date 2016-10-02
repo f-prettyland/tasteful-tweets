@@ -2,21 +2,11 @@
 var itemSize = 18,
   cellSize = itemSize-1,
   margin = {top:20,right:20,bottom:20,left:25};
-//   width = 800,
-//   height = 800,
-//
-// //formats
-// var hourFormat = d3.time.format('%H'),
-//   dayFormat = d3.time.format('%j'),
-//   timeFormat = d3.time.format('%Y-%m-%dT%X'),
-//   monthDayFormat = d3.time.format('%m.%d');
-//
-// //data vars for rendering
-// var dateExtent = null,
-//   data = null,
-//   dayOffset = 0,
-//   colorCalibration = ['#f6faaa','#FEE08B','#FDAE61','#F46D43','#D53E4F','#9E0142'],
-//   dailyValueExtent = {};
+
+
+var quantize = d3.scaleQuantize()
+    .domain([0, 15])
+    .range(d3.range(6).map(function(i) { return "q" + i + "-9"; }));
 
 var svg = d3.select("#main_canvas"),
     width = +svg.attr("width"),
@@ -44,9 +34,11 @@ d3.json("force.json", function(error, graph) {
       .attr("class", "nodes")
     .selectAll("circle")
     .data(graph.nodes)
+    // .attr("id", function(d) { return quantize(d.score); })
+    // .attr("class", function(d) { return quantize(d.score); })
     .enter().append("circle")
+      .attr("class", function(d) { return quantize(d.score); })
       .attr("r", 5)
-      .attr("fill", function(d) { return color(3); })
       .call(d3.drag()
           .on("start", dragstarted)
           .on("drag", dragged)
@@ -90,6 +82,28 @@ function dragended(d) {
   if (!d3.event.active) simulation.alphaTarget(0);
   d.fx = null;
   d.fy = null;
+}
+
+function renderColor(){
+  var renderByCount = document.getElementsByName('displayType')[0].checked;
+
+  rect
+    .filter(function(d){
+      return (d.value['PM2.5']>=0);
+    })
+    .transition()
+    .delay(function(d){
+      return (dayFormat(d.date)-dayOffset)*15;
+    })
+    .duration(500)
+    .attrTween('fill',function(d,i,a){
+      //choose color dynamicly
+      var colorIndex = d3.scale.quantize()
+        .range([0,1,2,3,4,5])
+        .domain((renderByCount?[0,500]:dailyValueExtent[d.day]));
+
+      return d3.interpolate(a,colorCalibration[colorIndex(d.value['PM2.5'])]);
+    });
 }
 
 function initCalibration(){

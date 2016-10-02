@@ -12,3 +12,28 @@
   stroke: #fff;
   stroke-width: 1.5px;
 }
+/*
+.q0-9 { fill:#f6faaa; }
+.q1-9 { fill:#FEE08B; }
+.q2-9 { fill:#FDAE61; }
+.q3-9 { fill:#F46D43; }
+.q4-9 { fill:#D53E4F; }
+.q5-9 { fill:#9E0142; }*/
+
+.q0-9 { fill:rgb(158,202,225); }
+.q1-9 { fill:rgb(107,174,214); }
+.q2-9 { fill:rgb(66,146,198); }
+.q3-9 { fill:rgb(33,113,181); }
+.q4-9 { fill:rgb(8,81,156); }
+.q5-9 { fill:rgb(8,48,107); }
+
+
+/*.q0-9 { fill:#f6faaa; }
+.q1-9 { fill:rgb(222,235,247); }
+.q2-9 { fill:rgb(198,219,239); }
+.q3-9 { fill:rgb(158,202,225); }
+.q4-9 { fill:rgb(107,174,214); }
+.q5-9 { fill:rgb(66,146,198); }
+.q6-9 { fill:rgb(33,113,181); }
+.q7-9 { fill:rgb(8,81,156); }
+.q8-9 { fill:rgb(8,48,107); }*/

@@ -28,6 +28,10 @@ def generate_graph():
   G.add_node(1)
   G.add_nodes_from([2,3])
 
+  G.node[1]['score'] = 1
+  G.node[2]['score'] = 2
+  G.node[3]['score'] = 15
+
   for n in G:
       G.node[n]['name'] = n
 
