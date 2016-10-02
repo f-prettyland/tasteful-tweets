@@ -45,7 +45,7 @@ def generate_graph(users):
   G=nx.Graph()
   for user in users:
     G.add_node(uid_to_gid[user.u_id])
-    G.node[uid_to_gid[user.u_id]]['score'] = user.avg_score
+    G.node[uid_to_gid[user.u_id]]['score'] = (-1)*user.avg_score
 
   for user in users:
     for follow in user.follows:

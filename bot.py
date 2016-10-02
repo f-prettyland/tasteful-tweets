@@ -15,6 +15,8 @@ pause_for_effect = 10
 threshold = -70
 
 global debug_mode
+global score_it_mode
+global tweet_back_mode
 global classifier
 classifier = None
 bad_nouns = loadWords('dict/bad.noun.txt')
@@ -24,20 +26,23 @@ nice_adjectives = loadWords('dict/funny.adj.txt')
 dictionary = loadDictionary('dict/dictionary.txt')
 b_t_dubs = ["By the way, ", "Oh and "]
 
+
 def happifier(replacee, replacers, bad_things):
-  regex = re.compile('|'.join(r'(?:\s+|^)'+re.escape(x)+r'(?:\s+|$)'
+  regex = re.compile('|'.join(r'(?:|^)'+re.escape(x)+r'(?:|$)'
                       for x in bad_things))
   randomChoice = random.randrange(len(replacers))
-  edited = regex.sub(" " + replacers[randomChoice] + " ", replacee)
-  new_regex = re.compile('|'.join(r'(?:\s+|^)'+re.escape(x.capitalize())+r'(?:\s+|$)'
+  edited = regex.sub( replacers[randomChoice], replacee)
+  new_regex = re.compile('|'.join(r'(?:|^)'+re.escape(x.capitalize())+r'(?:|$)'
                       for x in bad_things))
-  randomChoice = random.randrange(len(replacers))
-  return new_regex.sub(" " + replacers[randomChoice].capitalize() + " ", edited)
+  newRandomChoice = random.randrange(len(replacers))
+  return new_regex.sub(replacers[newRandomChoice].capitalize(), edited)
+
 
 def iterate_timeline(scrn_nam):
   posts = api.get_user_timeline(screen_name = scrn_nam)
   worst_score = threshold
   worst_post = None
+  worst_post_id = None
   for full_status in posts:
     p = full_status['text']
 
@@ -46,21 +51,22 @@ def iterate_timeline(scrn_nam):
     if p_score < worst_score:
       worst_score = p_score
       worst_post = p
-  if worst_post: 
-    status_replace(worst_post)
+      worst_post_id = full_status['id']
+  if worst_post:
+    status_replace(worst_post, scrn_nam, worst_post_id)
 
-def status_replace(p):
-  
+def status_replace(p, scrn_nam, twt_id):
+
   p_score = score_it(classifier, p)
 
   my_msg="The probability of this statement being offensive and hateful is: " + str(p_score)
 
-  if debug_mode:
+  if score_it_mode:
     print(my_msg)
   else:
     api.update_status(status=my_msg)
 
-  
+
   edited = happifier(p, nice_nouns, bad_nouns)
   edited = happifier(edited, nice_adjectives, bad_adjectives)
   swapped = []
@@ -69,10 +75,17 @@ def status_replace(p):
       swapped.append(key)
   if len(swapped) > 0:
     post_id = -1
+
     if debug_mode:
       print(edited)
     else:
-      new_post = api.update_status(status=edited)
+      new_post = {}
+      if tweet_back_mode:
+        edited = "@"+scrn_nam+" "+edited
+        new_post = api.update_status(status=edited,
+                            in_reply_to_status_id = twt_id)
+      else:
+        new_post = api.update_status(status=edited)
       post_id = new_post['id_str']
 
     first = True
@@ -90,10 +103,14 @@ def status_replace(p):
       else:
         api.update_status(status=defn,
                                     in_reply_to_status_id = post_id)
+  else:
+    print("Nothing to swap in here")
 
 def main(parsed_args):
   if results.tweet_id:
-    status_replace(api.lookup_status(id=results.tweet_id)[0]['text'])
+    the_tweet = api.lookup_status(id=results.tweet_id)[0]
+    status_replace(the_tweet['text'], the_tweet['id'],
+                  the_tweet['user']['screen_name'])
   elif results.account:
     iterate_timeline(results.account)
   else:
@@ -111,15 +128,22 @@ if __name__ == "__main__":
 
   prsr.add_argument('-d', dest='debug_mode', action='store_true',
                       help='Just print don\'t tweet')
- 
+
   prsr.add_argument('-s', dest='score_it', action='store_true',
                      help="Print out the offensive score")
 
+  prsr.add_argument('-r', dest='tweet_back', action='store_true',
+                     help="Tweet the result back at them")
+
 
   prsr.set_defaults(debug_mode=False)
+  prsr.set_defaults(score_it=False)
+  prsr.set_defaults(tweet_back=False)
 
   results = prsr.parse_args()
   debug_mode = results.debug_mode
+  score_it_mode = results.score_it
+  tweet_back_mode = results.tweet_back
   # try:
   classifier = train_model_and_prepare()
   main(results)
