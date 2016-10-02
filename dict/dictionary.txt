@@ -39,7 +39,7 @@ Flibbertigibbet,Nonsense, balderdash,Noun
 Flummox,To exasperate,Verb
 Folderol,Nonsense,Noun
 Formication,The sense of ants crawling on your skin,Noun
-Fuddy-duddy,An old-fashioned, mild-mannered person,Noun
+Fuddy-duddy,An old-fashioned mild-mannered person,Noun
 Furbelow,A fringe or ruffle,Noun
 Furphy,A portable water-container,Noun
 Gaberlunzie,A wandering beggar,Noun
