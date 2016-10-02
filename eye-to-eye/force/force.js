@@ -29,6 +29,8 @@ d3.json("force.json", function(error, graph) {
     .enter().append("line");
       // .attr("stroke-width", function(d) { return Math.sqrt(d.value); });
 
+      // .enter().append("title")
+      // .text(function(d) { return d.id; })
   var node = svg.append("g")
       .attr("class", "nodes")
     .selectAll("circle")
@@ -37,14 +39,13 @@ d3.json("force.json", function(error, graph) {
     // .attr("class", function(d) { return quantize(d.score); })
     .enter().append("circle")
       .attr("class", function(d) { return quantize(d.score); })
-      .attr("r", 5)
+      .attr("r", 10)
       .call(d3.drag()
           .on("start", dragstarted)
           .on("drag", dragged)
           .on("end", dragended));
-
-                // .append("title")
-                //     .text(function(d) { return d.id; })
+      // .enter().append("title")
+      //   .text(function(d) { return d.id; });
 
   simulation
       .nodes(graph.nodes)

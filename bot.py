@@ -59,7 +59,7 @@ def status_replace(p, scrn_nam, twt_id):
 
   p_score = score_it(classifier, p)
 
-  my_msg="The probability of this statement being offensive and hateful is: " + str(p_score)
+  my_msg="The sentiment anaylsis scoring for this statement being offensive and hateful is: " + str(p_score)
 
   if score_it_mode:
     print(my_msg)
@@ -109,8 +109,8 @@ def status_replace(p, scrn_nam, twt_id):
 def main(parsed_args):
   if results.tweet_id:
     the_tweet = api.lookup_status(id=results.tweet_id)[0]
-    status_replace(the_tweet['text'], the_tweet['id'],
-                  the_tweet['user']['screen_name'])
+    status_replace(the_tweet['text'], the_tweet['user']['screen_name'],
+                  the_tweet['id'])
   elif results.account:
     iterate_timeline(results.account)
   else:
