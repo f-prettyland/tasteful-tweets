@@ -8,8 +8,9 @@ from settings import api
 from networkx.readwrite import json_graph
 from sentiment_score import train_model_and_prepare, score_it
 
-max_expansions = 1
-max_followers_to_check = 200
+MAX_EXPANSIONS = 1
+MAX_FOLLOWERS_TO_CHECK = 10
+MAX_TWEETS_TO_SCORE = 10
 
 global classifier
 classifier = None
@@ -54,18 +55,18 @@ def generate_graph(users):
   http_server.load_url('eye-to-eye/force/force.html')
 
 def scrape_users(iter_c, users):
-  if iter_c >= max_expansions:
-    return users
+  if iter_c >= MAX_EXPANSIONS:
+    return []
   nextitr_users = []
   for user in users:
     followers_response = api.get_followers_ids(user_id=user.u_id,
-                                        count=max_followers_to_check)
+                                        count=MAX_FOLLOWERS_TO_CHECK)
     for follow_id in followers_response['ids']:
       potential_user = make_user_and_score(follow_id)
       if potential_user:
         nextitr_users.append(potential_user)
 
-  scrape_users(iter_c+1, nextitr_users)
+  return nextitr_users + scrape_users(iter_c+1, nextitr_users)
 
 def make_user_and_score(usr_id):
   # check not already made
@@ -78,7 +79,7 @@ def make_user_and_score(usr_id):
     print('Twitter access error for user id: ' + \
       str(usr_id) + "\n    " + str(error))
     return None
-  # posts = api.get_user_timeline(user_id = usr_id)
+  # posts = api.get_user_timeline(user_id = usr_id, count = MAX_TWEETS_TO_SCORE)
   # sum_score = 0
   # worst_post = None
   # for full_status in posts:
@@ -96,7 +97,7 @@ def main(parsed_args):
     usr_deets = api.show_user(screen_name = results.account)
     our_users = []
     our_users.append(make_user_and_score(usr_deets['id']))
-    scrape_users(0, our_users)
+    generate_graph(scrape_users(0, our_users))
   else:
     raise Exception('You gotta give me some kinda argument, -h is for help')
 
