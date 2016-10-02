@@ -84,7 +84,7 @@ Rambunctious,Aggressive, hard to control,Adj
 Ranivorous,Frog-eating,Adj
 Rigmarole,Nonsense, unnecessary complexity,Noun
 Shenanigan,A prank, mischief,Noun
-Sialoquent,Spitting while speaking,Adj
+Sialoquent,Tending to spray saliva when speaking,Adj
 Skedaddle,To hurry somewhere,Adj
 Skullduggery,No good, underhanded dealing,Adj
 Slangwhanger,A loud abusive speaker or obnoxious writer,Noun
