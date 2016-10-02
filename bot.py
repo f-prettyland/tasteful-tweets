@@ -40,15 +40,27 @@ def iterate_timeline(scrn_nam):
   worst_post = None
   for full_status in posts:
     p = full_status['text']
+
     p_score = score_it(classifier, p)
-    # print(p, "\nScore: ", p_score, "\n\n") #debug
+     #print(p, "\nScore: ", p_score, "\n\n") #debug
     if p_score < worst_score:
       worst_score = p_score
       worst_post = p
-  if worst_post:
+  if worst_post: 
     status_replace(worst_post)
 
 def status_replace(p):
+  
+  p_score = score_it(classifier, p)
+
+  my_msg="The probability of this statement being offensive and hateful is: " + str(p_score)
+
+  if debug_mode:
+    print(my_msg)
+  else:
+    api.update_status(status=my_msg)
+
+  
   edited = happifier(p, nice_nouns, bad_nouns)
   edited = happifier(edited, nice_adjectives, bad_adjectives)
   swapped = []
@@ -76,7 +88,7 @@ def status_replace(p):
       if debug_mode:
         print(defn)
       else:
-        new_post = api.update_status(status=defn,
+        api.update_status(status=defn,
                                     in_reply_to_status_id = post_id)
 
 def main(parsed_args):
@@ -99,6 +111,11 @@ if __name__ == "__main__":
 
   prsr.add_argument('-d', dest='debug_mode', action='store_true',
                       help='Just print don\'t tweet')
+ 
+  prsr.add_argument('-s', dest='score_it', action='store_true',
+                     help="Print out the offensive score")
+
+
   prsr.set_defaults(debug_mode=False)
 
   results = prsr.parse_args()
