@@ -70,7 +70,7 @@ def scrape_users(iter_c, users):
       followers_response = api.get_followers_ids(user_id=user.u_id,
                                           count=MAX_FOLLOWERS_TO_CHECK)
       for follow_id in followers_response['ids']:
-        print(follow_id)
+        # print(follow_id)
         potential_user = make_user_and_score(follow_id, user.u_id)
         if potential_user:
           nextitr_users.append(potential_user)
@@ -87,28 +87,30 @@ def make_user_and_score(usr_id, fri):
     return None
   try:
     usr_deets = api.show_user(user_id = usr_id)
+    frieeends = []
     if fri:
-      our_user = User(usr_id, usr_deets['screen_name'], 60, [], [fri])
+      frieeends = [fri]
+
+    posts = api.get_user_timeline(user_id = usr_id, count = MAX_TWEETS_TO_SCORE)
+    sum_score = 0
+    worst_post = None
+    for full_status in posts:
+      p = full_status['text']
+      sum_score += score_it(classifier, p)
+      # print(p, "\nCumul score: ", sum_score, "\n\n") #debug
+
+    if len(posts) > 0:
+      usr_deets = api.show_user(user_id = usr_id)
+      our_user = User(usr_id, usr_deets['screen_name'],
+                      sum_score/len(posts), [], frieeends)
+      uid_to_user[usr_id] = our_user
+      return our_user
     else:
-      our_user = User(usr_id, usr_deets['screen_name'], -90, [], [])
-    uid_to_user[usr_id] = our_user
-    return our_user
+      return None
   except Exception as error:
     print('Twitter access error for user id: ' + \
       str(usr_id) + "\n    " + str(error))
     return None
-  # posts = api.get_user_timeline(user_id = usr_id, count = MAX_TWEETS_TO_SCORE)
-  # sum_score = 0
-  # worst_post = None
-  # for full_status in posts:
-  #   p = full_status['text']
-  #   sum_score += score_it(classifier, p)
-  #   print(p, "\nCumul score: ", sum_score, "\n\n") #debug
-  # if len(posts) > 0:
-  #   usr_deets = api.show_user(user_id = usr_id)
-  #   return User(usr_id, usr_deets['screen_name'], sum_score/len(posts), [], [])
-  # else:
-  #   return None
 
 def main(parsed_args):
   if results.account:
@@ -116,8 +118,7 @@ def main(parsed_args):
     our_users = []
     our_users.append(make_user_and_score(usr_deets['id'], None))
     users_scraped = scrape_users(0, our_users)
-    print(len(users_scraped))
-    generate_graph(users_scraped)
+    generate_graph(our_users + users_scraped)
   else:
     raise Exception('You gotta give me some kinda argument, -h is for help')
 

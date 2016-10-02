@@ -5,7 +5,7 @@ var itemSize = 18,
 
 
 var quantize = d3.scaleQuantize()
-    .domain([-100, 100])
+    .domain([-40, 40])
     .range(d3.range(6).map(function(i) { return "q" + i + "-9"; }));
 
 var svg = d3.select("#main_canvas"),
