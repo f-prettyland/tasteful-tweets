@@ -12,7 +12,6 @@ var svg = d3.select("#main_canvas"),
     width = +svg.attr("width"),
     height = +svg.attr("height");
 
-var color = d3.scaleOrdinal(d3.schemeCategory20);
 var colorCalibration = ['#f6faaa','#FEE08B','#FDAE61','#F46D43','#D53E4F','#9E0142'];
 
 var simulation = d3.forceSimulation()
