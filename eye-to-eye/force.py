@@ -8,12 +8,14 @@ from settings import api
 from networkx.readwrite import json_graph
 from sentiment_score import train_model_and_prepare, score_it
 
-MAX_EXPANSIONS = 1
+MAX_EXPANSIONS = 2
 MAX_FOLLOWERS_TO_CHECK = 10
 MAX_TWEETS_TO_SCORE = 10
 
 global classifier
 classifier = None
+global uid_to_user
+uid_to_user = {}
 uid_to_gid = {}
 global gid
 gid = 0
@@ -24,6 +26,9 @@ class User(object):
   avg_score = 0
   interests = []
   follows = []
+
+  def add_friend(fri):
+    follows.append(fri)
 
   def __init__(self, u_id, screen_name, avg_score, interests, follows):
     global gid
@@ -55,26 +60,39 @@ def generate_graph(users):
   http_server.load_url('eye-to-eye/force/force.html')
 
 def scrape_users(iter_c, users):
+  print("iteration ", iter_c)
+  print("usser size ", len(users))
   if iter_c >= MAX_EXPANSIONS:
     return []
   nextitr_users = []
   for user in users:
-    followers_response = api.get_followers_ids(user_id=user.u_id,
-                                        count=MAX_FOLLOWERS_TO_CHECK)
-    for follow_id in followers_response['ids']:
-      potential_user = make_user_and_score(follow_id)
-      if potential_user:
-        nextitr_users.append(potential_user)
+    try:
+      followers_response = api.get_followers_ids(user_id=user.u_id,
+                                          count=MAX_FOLLOWERS_TO_CHECK)
+      for follow_id in followers_response['ids']:
+        print(follow_id)
+        potential_user = make_user_and_score(follow_id, user.u_id)
+        if potential_user:
+          nextitr_users.append(potential_user)
+    except Exception as error:
+      print('Twitter access error for user id: ' + \
+        str(user.u_id) + "\n    " + str(error))
 
   return nextitr_users + scrape_users(iter_c+1, nextitr_users)
 
-def make_user_and_score(usr_id):
+def make_user_and_score(usr_id, fri):
   # check not already made
   if usr_id in uid_to_gid.keys():
+    uid_to_user[usr_id].add_friend(fri)
     return None
   try:
     usr_deets = api.show_user(user_id = usr_id)
-    return User(usr_id, usr_deets['screen_name'], 20, [], [])
+    if fri:
+      our_user = User(usr_id, usr_deets['screen_name'], 60, [], [fri])
+    else:
+      our_user = User(usr_id, usr_deets['screen_name'], -90, [], [])
+    uid_to_user[usr_id] = our_user
+    return our_user
   except Exception as error:
     print('Twitter access error for user id: ' + \
       str(usr_id) + "\n    " + str(error))
@@ -96,8 +114,10 @@ def main(parsed_args):
   if results.account:
     usr_deets = api.show_user(screen_name = results.account)
     our_users = []
-    our_users.append(make_user_and_score(usr_deets['id']))
-    generate_graph(scrape_users(0, our_users))
+    our_users.append(make_user_and_score(usr_deets['id'], None))
+    users_scraped = scrape_users(0, our_users)
+    print(len(users_scraped))
+    generate_graph(users_scraped)
   else:
     raise Exception('You gotta give me some kinda argument, -h is for help')
 
