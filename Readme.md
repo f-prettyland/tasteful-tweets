@@ -5,7 +5,12 @@ A hackathon project from `#peacehackldn`
 Seeking to turn hateful tweets into something a little more funny
 
 ### Example
+From
+
 ![Rude tweet from Donald Trump](./out/rude.png)
+
+to
+
 ![Altered tweet by us](./out/less-rude.png)
 
 ### How
