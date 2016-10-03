@@ -37,3 +37,6 @@ Averages our sentiment score from their most recent *n* tweets and from *p* foll
 ## Dependancies
 - `nltk` plus `punkt` and  either `movie_reviews` or whatever corpus you wanna train on
 - `twython`
+
+# References
+This code would not be possible without code shared from (streamhacker)[http://streamhacker.com/2010/05/10/text-classification-sentiment-analysis-naive-bayes-classifier/] for NB classifier, (networkx)[https://github.com/networkx/networkx/tree/master/examples/javascript] for their json graph deployment and (heatmap)[http://bl.ocks.org/oyyd/859fafc8122977a3afd6] for colours and layout.
