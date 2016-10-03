@@ -1,3 +1,18 @@
+# ---- Some stream stuff ---- 
+# class MyStreamer(TwythonStreamer):
+#   def on_success(self, data):
+#     if 'text' in data:
+#       print (data['text'])
+#
+# def on_error(self, status_code, data):
+#     print (status_code)
+#     self.disconnect()
+#
+# stream = MyStreamer(CONSUMER_KEY, CONSUMER_SECRET,
+#                     ACCESS_KEY, ACCESS_SECRET)
+#
+# stream.statuses.filter(track='twitter')
+
 
 def randomTweet():
   try:
